@@ -60,10 +60,10 @@ async fn run() -> anyhow::Result<()> {
     let run = harness.run(req);
     tokio::pin!(run);
 
-    // Report progress, abort if cancel is requested
+    // Run loop
     let mut cancel = install_cancel();
     let mut cancel_requested = false;
-    let _report = loop {
+    let report = loop {
         tokio::select! {
             result = &mut run => break result,
             Ok(()) = &mut cancel, if !cancel_requested => {
@@ -72,6 +72,9 @@ async fn run() -> anyhow::Result<()> {
             }
         }
     };
+
+    // Display report
+    eprintln!("Report: {report:?}");
 
     Ok(())
 }
