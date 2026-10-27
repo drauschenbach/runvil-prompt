@@ -5,3 +5,8 @@ edition = "2024"
 authors = ["David Rauschenbach <david@cppalliance.org>"]
 
 [dependencies]
+anyhow = "1.0"
+harness = { path = "../cppalliance/runvil/crates/harness" }
+harness-gateway-client = { path = "../cppalliance/runvil/crates/harness-gateway-client" }
+serde_json = "1.0"
+tokio = { version = "1.54", features = ["rt", "macros", "signal", "fs", "sync", "time"]}
