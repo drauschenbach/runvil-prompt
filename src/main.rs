@@ -35,7 +35,6 @@ async fn run() -> anyhow::Result<()> {
         Arc::new(host_context),
         host_services,
     );
-    let control = harness.control();
 
     // Configure Host
     let selected_model = None;
@@ -57,6 +56,7 @@ async fn run() -> anyhow::Result<()> {
     };
 
     // Start the run
+    let control = harness.control();
     let run = harness.run(req);
     tokio::pin!(run);
 

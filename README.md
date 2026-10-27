@@ -1,6 +1,6 @@
 # Runvil Prompt
 
-My first Runvil prompt.
+My first [Runvil](https://github.com/cppalliance/runvil) prompt.
 
 ## Usage
 
