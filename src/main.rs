@@ -46,10 +46,10 @@ async fn run() -> anyhow::Result<()> {
     };
 
     // Prepare request
-    let source = "# My Prompt";
+    const SOURCE: &str = include_str!("../prompt.md");
     let req = RunRequest {
         name: "my run request".to_string(),
-        source: source.to_string(),
+        source: SOURCE.to_string(),
         args: "".to_string(),
         input_text: None,
         vfs: Default::default(),
