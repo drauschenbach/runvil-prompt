@@ -8,8 +8,7 @@ use crate::tokio_timer::TokioTimer;
 use harness::pack::{HostContext, HostServices, PackRegistry};
 use harness::{Harness, HostSnapshot, RunRequest};
 use harness_gateway_client::{GatewayBroker, GatewayEndpoint, SecretString};
-use std::env;
-use std::sync::Arc;
+use std::{env, sync::Arc};
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
@@ -21,6 +20,7 @@ async fn main() {
 async fn run() -> anyhow::Result<()> {
     // Configure harness
     let gateway_url = env::var("GATEWAY_URL").expect("a GATEWAY_URL is required");
+    let gateway_url = format!("{gateway_url}/v1");
     let gateway_secret = env::var("GATEWAY_SECRET").expect("a GATEWAY_SECRET is required");
     let gateway_endpoint = GatewayEndpoint::new(&gateway_url)?;
     let gateway_secret = SecretString::new(gateway_secret)?;
