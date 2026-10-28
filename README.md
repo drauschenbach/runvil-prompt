@@ -55,6 +55,18 @@ Then run this program:
 ```shell
 $ GATEWAY_URL=http://127.0.0.1:50315 GATEWAY_SECRET=__REDACTED__ cargo run
 Starting
-Report: Err(Model(CatalogFetchFailed(CompletionError { kind: Rejected, message: "the model backend rejected the request (status 404)", prompt_tokens: None, window: None, finish_reason: None, detail: Some("(empty body)"), source: None })))
+[my run request] Prompt: parse_started
+[my run request] Say hi: lua_compilation_started
+[my run request] Say hi: lua_compilation_succeeded
+[my run request] Prompt: parse_succeeded
+[my run request] Greeter: run_started
+[my run request] Say hi: section_started
+[my run request] Say hi: lua_chunk_started
+[my run request] Say hi: lua_chunk_succeeded
+[my run request] Say hi: lua_teardown_started
+[my run request] Say hi: lua_teardown_succeeded
+[my run request] Say hi: section_finished
+[my run request] Greeter: run_succeeded
+Report: Ok(RunReport { run_id: Some(RunId(1)), outcome: Completed { final_text: "Say hello." }, output: Err(Undeclared) })
 Finished
 ```
