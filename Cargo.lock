@@ -1685,6 +1685,7 @@ dependencies = [
  "harness",
  "harness-gateway-client",
  "plugin-web",
+ "runvil-plugin",
  "serde_json",
  "tokio",
 ]

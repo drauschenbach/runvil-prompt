@@ -7,8 +7,9 @@ use crate::progress_recorder::ProgressRecorder;
 use crate::tokio_timer::TokioTimer;
 use harness::pack::{HostContext, HostServices, PackRegistry};
 use harness::{Harness, HostSnapshot, RunRequest};
-use harness_gateway_client::{GatewayBroker, GatewayEndpoint, SecretString};
+use harness_gateway_client::{GatewayBroker, GatewayEndpoint, GatewaySearch, SecretString};
 use std::{env, sync::Arc};
+use runvil_plugin::ServiceKey;
 use serde_json::json;
 
 #[tokio::main(flavor = "current_thread")]
@@ -19,16 +20,26 @@ async fn main() {
 }
 
 async fn run() -> anyhow::Result<()> {
-    // Configure harness
+    // Configure gateway connection
     let gateway_url = env::var("GATEWAY_URL").expect("a GATEWAY_URL is required");
     let gateway_url = format!("{gateway_url}/v1");
-    let gateway_secret = env::var("GATEWAY_SECRET").expect("a GATEWAY_SECRET is required");
     let gateway_endpoint = GatewayEndpoint::new(&gateway_url)?;
+    let gateway_secret = env::var("GATEWAY_SECRET").expect("a GATEWAY_SECRET is required");
     let gateway_secret = SecretString::new(gateway_secret)?;
-    let gateway_broker = GatewayBroker::new(gateway_endpoint, gateway_secret);
+
+    // Configure packs
     let mut pack_registry = PackRegistry::new();
     plugin_web::install(&mut pack_registry, json!({}))?;
-    let host_services = HostServices::new();
+
+    // Configure host services (search and tokio)
+    const RUNTIME: ServiceKey<tokio::runtime::Handle> = ServiceKey::new(runvil_plugin::TOKIO_RUNTIME);
+    let mut host_services = HostServices::new();
+    let gateway_search = GatewaySearch::new(gateway_endpoint.clone(), gateway_secret.clone());
+    host_services.provide(&plugin_web::SEARCH_PROVIDER, Arc::new(gateway_search))?;
+    host_services.provide(&RUNTIME, Arc::new(tokio::runtime::Handle::current()))?;
+
+    // Configure harness
+    let gateway_broker = GatewayBroker::new(gateway_endpoint, gateway_secret);
     let host_context = HostContext::new(pack_registry, host_services.clone());
     let harness = Harness::new(
         Arc::new(ProgressRecorder),
