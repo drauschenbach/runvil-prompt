@@ -7,6 +7,11 @@ uses:
   - web
 models:
   researcher: {}
+args:
+  name:
+    type: string
+  links:
+    type: string
 ---
 
 # Research a Person
@@ -18,7 +23,7 @@ models.default("researcher")
 ## Research
 
 ```lua
-tools.offer({"web/search", "web/fetch"})
+tools.offer({"web"})
 ```
 
 You research people using live web tools and return a compact, factual summary.

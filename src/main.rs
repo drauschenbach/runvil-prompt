@@ -60,10 +60,24 @@ async fn run() -> anyhow::Result<()> {
 
     // Prepare request
     const SOURCE: &str = include_str!("../prompt.md");
+    let args = json!({
+        "name": "David Rauschenbach",
+        "links": vec![
+            "https://github.com/drauschenbach",
+            "https://gitlab.com/drauschenbach",
+            "https://gitlab.com/megalithic-llc",
+            "https://gitlab.com/megalithic-llc/auric-spa",
+            "https://gitlab.com/megalithic-llc/stuart",
+            "https://gitlab.com/on-prem-net",
+            "https://gitlab.com/saas-rs",
+            "https://www.finanznachrichten.de/nachrichten-2007-10/9303338-synchronica-plc-synchronica-or-the-company-acquisition-of-assets-004.htm",
+            "https://www.slideshare.net/slideshow/developing-and-deploying-edge-analytics-with-redis/139258257",
+        ]
+    }).to_string();
     let req = RunRequest {
         name: "research-person-d-rauschenbach".to_string(),
         source: SOURCE.to_string(),
-        args: "David Rauschenbach".to_string(),
+        args,
         input_text: None,
         vfs: Default::default(),
         host,
