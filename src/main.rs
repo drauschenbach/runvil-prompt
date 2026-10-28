@@ -28,11 +28,11 @@ async fn run() -> anyhow::Result<()> {
     let gateway_secret = env::var("GATEWAY_SECRET").expect("a GATEWAY_SECRET is required");
     let gateway_secret = SecretString::new(gateway_secret)?;
 
-    // Configure packs
+    // Configure packs (just "web")
     let mut pack_registry = PackRegistry::new();
     plugin_web::install(&mut pack_registry, json!({}))?;
 
-    // Configure host services (search and tokio)
+    // Configure host services (search provider and runtime)
     const RUNTIME: ServiceKey<tokio::runtime::Handle> = ServiceKey::new(runvil_plugin::TOKIO_RUNTIME);
     let mut host_services = HostServices::new();
     let gateway_search = GatewaySearch::new(gateway_endpoint.clone(), gateway_secret.clone());
