@@ -9,6 +9,7 @@ use harness::pack::{HostContext, HostServices, PackRegistry};
 use harness::{Harness, HostSnapshot, RunRequest};
 use harness_gateway_client::{GatewayBroker, GatewayEndpoint, SecretString};
 use std::{env, sync::Arc};
+use serde_json::json;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
@@ -25,7 +26,8 @@ async fn run() -> anyhow::Result<()> {
     let gateway_endpoint = GatewayEndpoint::new(&gateway_url)?;
     let gateway_secret = SecretString::new(gateway_secret)?;
     let gateway_broker = GatewayBroker::new(gateway_endpoint, gateway_secret);
-    let pack_registry = PackRegistry::new();
+    let mut pack_registry = PackRegistry::new();
+    plugin_web::install(&mut pack_registry, json!({}))?;
     let host_services = HostServices::new();
     let host_context = HostContext::new(pack_registry, host_services.clone());
     let harness = Harness::new(
@@ -74,7 +76,7 @@ async fn run() -> anyhow::Result<()> {
     };
 
     // Display report
-    eprintln!("Report: {report:?}");
+    eprintln!("{report:?}");
 
     Ok(())
 }
