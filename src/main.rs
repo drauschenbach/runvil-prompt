@@ -9,6 +9,7 @@ use harness::pack::{HostContext, HostServices, PackRegistry};
 use harness::{Harness, HostSnapshot, RunRequest};
 use harness_gateway_client::{GatewayBroker, GatewayEndpoint, GatewaySearch, SecretString};
 use std::{env, sync::Arc};
+use harness::record::RunOutcome;
 use runvil_plugin::ServiceKey;
 use serde_json::json;
 
@@ -76,7 +77,7 @@ async fn run() -> anyhow::Result<()> {
     // Run loop
     let mut cancel = install_cancel();
     let mut cancel_requested = false;
-    let report = loop {
+    let maybe_report = loop {
         tokio::select! {
             result = &mut run => break result,
             Ok(()) = &mut cancel, if !cancel_requested => {
@@ -86,8 +87,14 @@ async fn run() -> anyhow::Result<()> {
         }
     };
 
-    // Display report
-    eprintln!("{report:?}");
+    // Display report output
+    if let Ok(run_report) = maybe_report {
+        match run_report.outcome {
+            RunOutcome::Completed{final_text} => {eprintln!("{final_text}")},
+            RunOutcome::Failed{kind, message} => {eprintln!("Failed: {kind}: {message}")},
+            RunOutcome::Cancelled => {}
+        }
+    }
 
     Ok(())
 }
