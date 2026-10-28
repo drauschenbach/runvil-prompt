@@ -37,7 +37,7 @@ async fn run() -> anyhow::Result<()> {
     );
 
     // Configure Host
-    let selected_model = None;
+    let selected_model = Some("Claude Opus 5.5".to_string());
     let workspace_roots = vec![];
     let host = HostSnapshot {
         selected_model,
